@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر مصروفي - البقالة الإلكترونية</title>
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --secondary-color: #059669;
+            --danger-color: #ef4444;
+            --warning-color: #f97316;
+            --light-bg: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+        }
+
+        .logo-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: white;
+            padding: 2px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo-text small {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            font-weight: normal;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-items a, .nav-items button {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-items a:hover, .nav-items button:hover {
+            color: var(--primary-color);
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .admin-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .admin-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* الصفحة الرئيسية */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero .btn {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .neighborhoods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .neighborhood-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .neighborhood-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .neighborhood-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* الأقسام */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .category-item:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .category-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* قائمة المنتجات */
+        .products-section {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .filters-sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .filter-group:last-child {
+            border-bottom: none;
+        }
+
+        .filter-group h4 {
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .products-container {
+            flex: 1;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-bar button:hover {
+            background: var(--secondary-color);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .product-image-emoji {
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .product-price {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+        }
+
+        .stock-warning {
+            color: var(--warning-color);
+        }
+
+        .stock-out {
+            color: var(--danger-color);
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 0.9rem;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .btn.btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn.btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+        }
+
+        /* صفحة المنتج */
+        .product-detail {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .product-detail-image {
+            flex: 1;
+            background: var(--light-bg);
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-detail-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .product-detail-image-emoji {
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-detail-info {
+            flex: 1;
+        }
+
+        .product-detail-info h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-detail-info .price {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .product-detail-info .description {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .product-detail-info .category-tag {
+            display: inline-block;
+            background: var(--light-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quantity-selector button {
+            background: var(--light-bg);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .quantity-selector input {
+            width: 60px;
+            text-align: center;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        /* السلة */
+        .cart-empty {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .cart-empty h2 {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .cart-table thead {
+            background: var(--light-bg);
+        }
+
+        .cart-table th {
+            padding: 1rem;
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .cart-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .cart-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .cart-summary {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            max-width: 400px;
+            margin-right: 0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row.total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        /* الدفع والتأكيد */
+        .checkout-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .delivery-fee-info {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirmation-modal.active {
+            display: flex;
+        }
+
+        .confirmation-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .confirmation-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .confirmation-item:last-child {
+            border-bottom: none;
+        }
+
+        .confirmation-item strong {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .confirmation-item span {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-top: 0.3rem;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .confirmation-buttons button {
+            flex: 1;
+        }
+
+        /* تتبع الطلب */
+        .order-tracking {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .order-status-timeline {
+            margin: 2rem 0;
+        }
+
+        .status-step {
+            display: flex;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .status-step::before {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 45px;
+            width: 2px;
+            height: 60px;
+            background: var(--border-color);
+        }
+
+        .status-step:last-child::before {
+            display: none;
+        }
+
+        .status-dot {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-bg);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .status-step.completed .status-dot {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .status-step.current .status-dot {
+            background: white;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .status-info h4 {
+            margin-bottom: 0.3rem;
+        }
+
+        .status-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* حساب العميل */
+        .account-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .account-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .orders-list {
+            margin-top: 2rem;
+        }
+
+        .order-item {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* التواصل والسياسات */
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+        }
+
+        .contact-info {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .contact-info-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .policies-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            line-height: 1.8;
+        }
+
+        .policies-content h2 {
+            color: var(--primary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .policies-content h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .policies-content ul {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .policies-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* لوحة الإدارة */
+        .admin-panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .admin-tab {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .admin-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        .product-form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .orders-admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .orders-admin-table thead {
+            background: var(--light-bg);
+        }
+
+        .orders-admin-table th, .orders-admin-table td {
+            padding: 0.8rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .orders-admin-table tr:hover {
+            background: var(--light-bg);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-badge.confirmed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.shipped {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-badge.delivered {
+            background: #c7d2fe;
+            color: #3730a3;
+        }
+
+        .status-badge.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .action-select {
+            padding: 0.4rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .stat-card h3 {
+            color: white;
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .reports-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .reports-table thead {
+            background: white;
+        }
+
+        .reports-table th, .reports-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .reports-table tr:hover {
+            background: white;
+        }
+
+        footer {
+            background: var(--text-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .products-section {
+                flex-direction: column;
+            }
+
+            .filters-sidebar {
+                width: 100%;
+            }
+
+            .product-detail {
+                flex-direction: column;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .nav-items {
+                gap: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="adminLoggedIn && showLogoSettings()">
+                <img id="logoImage" class="logo-image" src="https://agi-prod-file-upload-public-main-use1.s3.amazonaws.com/d6487fd0-41c3-4706-af9c-42c70d6a6a23" alt="اللوغو">
+                <div class="logo-text">
+                    <span>مصروفي</span>
+                    <small id="storeSubtitle">البقالة الإلكترونية</small>
+                </div>
+            </div>
+            <ul class="nav-items">
+                <li><button onclick="goToPage('home')">الرئيسية</button></li>
+                <li><button onclick="goToPage('categories')">الأقسام</button></li>
+                <li><button onclick="goToPage('products')">المنتجات</button></li>
+                <li><button onclick="goToPage('contact')">تواصل معنا</button></li>
+                <li><button onclick="goToPage('account')">حسابي</button></li>
+                <li><button class="admin-btn" onclick="showAdminLogin()">إدارة</button></li>
+                <li class="cart-icon">
+                    <button onclick="goToPage('cart')">سلة التسوق</button>
+                    <span class="cart-count" id="cartCount">0</span>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- الصفحة الرئيسية -->
+        <div class="page active" id="home">
+            <div class="hero">
+                <h1>مرحباً بك في متجر مصروفي</h1>
+                <p>بقالة إلكترونية تخدم أحياء الضاية، لبلاد، والقرية</p>
+                <button class="btn" onclick="goToPage('products')">تسوق الآن</button>
+            </div>
+
+            <h2 style="margin-bottom: 1.5rem;">الأحياء المخدومة</h2>
+            <div class="neighborhoods">
+                <div class="neighborhood-card" onclick="filterByNeighborhood('الضاية')">
+                    <h3>حي الضاية</h3>
+                    <p>رسوم التوصيل: 200 دج</p>
+                </div>
+                <div class="neighborhood-card" onclick="filterByNeighborhood('لبلاد')">
+                    <h3>حي لبلاد</h3>
+                    <p>رسوم التوصيل: 200 دج</p>
+                </div>
+                <div class="neighborhood-card" onclick="filterByNeighborhood('القرية')">
+                    <h3>حي القرية</h3>
+                    <p>رسوم التوصيل: 250 دج</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة الأقسام -->
+        <div class="page" id="categories">
+            <h1>الأقسام</h1>
+            <div class="categories-grid" style="margin-top: 2rem;">
+                <div class="category-item active" onclick="filterByCategory('جميع المنتجات')">جميع المنتجات</div>
+                <div class="category-item" onclick="filterByCategory('الفواكه والخضار')">الفواكه والخضار</div>
+                <div class="category-item" onclick="filterByCategory('الألبان والجبن')">الألبان والجبن</div>
+                <div class="category-item" onclick="filterByCategory('اللحوم والدواجن')">اللحوم والدواجن</div>
+                <div class="category-item" onclick="filterByCategory('المشروبات')">المشروبات</div>
+                <div class="category-item" onclick="filterByCategory('الحبوب والمعكرونة')">الحبوب والمعكرونة</div>
+                <div class="category-item" onclick="filterByCategory('المعلبات')">المعلبات</div>
+                <div class="category-item" onclick="filterByCategory('الحلويات')">الحلويات</div>
+            </div>
+        </div>
+
+        <!-- صفحة المنتجات -->
+        <div class="page" id="products">
+            <h1>المنتجات</h1>
+            <div class="products-section" style="margin-top: 1.5rem;">
+                <div class="filters-sidebar">
+                    <h3>الفلاتر</h3>
+                    <div class="filter-group">
+                        <h4>البحث</h4>
+                        <input type="text" id="searchInput" placeholder="ابحث عن منتج..." onkeyup="applyFilters()">
+                    </div>
+                    <div class="filter-group">
+                        <h4>القسم</h4>
+                        <select id="categoryFilter" onchange="applyFilters()">
+                            <option value="">جميع الأقسام</option>
+                            <option value="الفواكه والخضار">الفواكه والخضار</option>
+                            <option value="الألبان والجبن">الألبان والجبن</option>
+                            <option value="اللحوم والدواجن">اللحوم والدواجن</option>
+                            <option value="المشروبات">المشروبات</option>
+                            <option value="الحبوب والمعكرونة">الحبوب والمعكرونة</option>
+                            <option value="المعلبات">المعلبات</option>
+                            <option value="الحلويات">الحلويات</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <h4>نطاق السعر</h4>
+                        <input type="number" id="minPrice" placeholder="السعر الأدنى" onchange="applyFilters()">
+                        <input type="number" id="maxPrice" placeholder="السعر الأقصى" onchange="applyFilters()">
+                    </div>
+                    <button class="btn" onclick="clearFilters()" style="width: 100%;">مسح الفلاتر</button>
+                </div>
+
+                <div class="products-container">
+                    <div class="search-bar">
+                        <input type="text" placeholder="ابحث عن منتج..." onkeyup="applyFilters()">
+                        <button onclick="applyFilters()">🔍 بحث</button>
+                    </div>
+                    <div class="products-grid" id="productsGrid">
+                        <!-- يتم ملء المنتجات من JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة تفاصيل المنتج -->
+        <div class="page" id="productDetail">
+            <button class="btn btn-secondary" onclick="goToPage('products')" style="margin-bottom: 1rem;">← رجوع</button>
+            <div class="product-detail">
+                <div class="product-detail-image" id="detailImage">🏷️</div>
+                <div class="product-detail-info">
+                    <h1 id="detailName"></h1>
+                    <div class="price" id="detailPrice"></div>
+                    <span class="category-tag" id="detailCategory"></span>
+                    <p class="description" id="detailDescription"></p>
+                    <p id="detailStock"></p>
+
+                    <div class="quantity-selector">
+                        <button onclick="changeQuantity(-1)">−</button>
+                        <input type="number" id="quantityInput" value="1" min="1">
+                        <button onclick="changeQuantity(1)">+</button>
+                    </div>
+
+                    <button class="btn" id="addToCartBtn" onclick="addToCart()" style="margin-bottom: 1rem; width: 100%;">أضف إلى السلة</button>
+                    <button class="btn btn-secondary" onclick="goToPage('products')" style="width: 100%;">متابعة التسوق</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة السلة -->
+        <div class="page" id="cart">
+            <h1>سلة التسوق</h1>
+            <div id="cartContent">
+                <div class="cart-empty">
+                    <h2>سلتك فارغة</h2>
+                    <button class="btn" onclick="goToPage('products')">ابدأ التسوق</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة الدفع -->
+        <div class="page" id="checkout">
+            <h1>إكمال الطلب</h1>
+            <form class="checkout-form" onsubmit="processCheckout(event)">
+                <h2>معلومات التوصيل</h2>
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="customerPhone" placeholder="0xxxxxxxxx" required>
+                </div>
+                <div class="form-group">
+                    <label>الحي</label>
+                    <select id="customerNeighborhood" required onchange="updateDeliveryFee()">
+                        <option value="">اختر الحي</option>
+                        <option value="الضاية">حي الضاية - 200 دج</option>
+                        <option value="لبلاد">حي لبلاد - 200 دج</option>
+                        <option value="القرية">حي القرية - 250 دج</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>العنوان التفصيلي</label>
+                    <textarea id="customerAddress" required></textarea>
+                </div>
+
+                <h2>ملخص الطلب</h2>
+                <div class="delivery-fee-info">
+                    <p>طريقة الدفع: <strong>الدفع عند الاستلام (COD)</strong></p>
+                    <p style="margin-top: 0.5rem;">الإجمالي: <strong id="checkoutTotal">0</strong> دج</p>
+                    <p style="margin-top: 0.5rem;">رسوم التوصيل: <strong id="deliveryFee">0</strong> دج</p>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="goToPage('cart')" style="flex: 1;">العودة</button>
+                    <button type="submit" class="btn" style="flex: 1;">تأكيد الطلب</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- تأكيد الطلب -->
+        <div class="confirmation-modal" id="confirmationModal">
+            <div class="confirmation-content">
+                <h2 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-color);">✓ تأكيد الطلب</h2>
+                <p style="text-align: center; color: var(--text-light); margin-bottom: 1.5rem;">يرجى التحقق من معلومات طلبك قبل إرساله</p>
+
+                <div class="confirmation-item">
+                    <strong>الاسم:</strong>
+                    <span id="confName"></span>
+                </div>
+                <div class="confirmation-item">
+                    <strong>رقم الهاتف:</strong>
+                    <span id="confPhone"></span>
+                </div>
+                <div class="confirmation-item">
+                    <strong>الحي:</strong>
+                    <span id="confNeighborhood"></span>
+                </div>
+                <div class="confirmation-item">
+                    <strong>العنوان:</strong>
+                    <span id="confAddress"></span>
+                </div>
+                <div class="confirmation-item">
+                    <strong>رسوم التوصيل:</strong>
+                    <span id="confDeliveryFee"></span>
+                </div>
+                <div class="confirmation-item">
+                    <strong>الإجمالي النهائي:</strong>
+                    <span id="confTotal" style="font-size: 1.3rem; color: var(--primary-color);"></span>
+                </div>
+
+                <div class="confirmation-buttons">
+                    <button class="btn btn-secondary" onclick="closeConfirmation()">إلغاء</button>
+                    <button class="btn" onclick="submitOrder()">تأكيد النهائي</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صفحة تتبع الطلب -->
+        <div class="page" id="tracking">
+            <h1>تتبع الطلب</h1>
+            <div class="order-tracking">
+                <div class="form-group" style="max-width: 400px;">
+                    <label>رقم الطلب:</label>
+                    <input type="text" id="trackingOrderId" placeholder="أدخل رقم الطلب">
+                </div>
+                <button class="btn" onclick="searchOrder()" style="margin-bottom: 1.5rem;">بحث</button>
+
+                <div id="trackingResult"></div>
+            </div>
+        </div>
+
+        <!-- صفحة حساب العميل -->
+        <div class="page" id="account">
+            <div class="account-section">
+                <h2>حسابي</h2>
+                <p>أوامري السابقة:</p>
+                <div class="orders-list" id="myOrdersList">
+                    <p style="color: var(--text-light);">لا توجد طلبات سابقة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- التواصل معنا -->
+        <div class="page" id="contact">
+            <h1>تواصل معنا</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="contact-info">
+                    <div class="contact-info-icon">📞</div>
+                    <div>
+                        <h3>الهاتف</h3>
+                        <p>0669986649</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-info-icon">📍</div>
+                    <div>
+                        <h3>الموقع</h3>
+                        <p>الأغواط - الجزائر</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <div class="contact-info-icon">⏰</div>
+                    <div>
+                        <h3>ساعات العمل</h3>
+                        <p>من 9 صباحاً إلى 9 مساءً</p>
+                    </div>
+                </div>
+            </div>
+
+            <form class="contact-form" onsubmit="sendContactMessage(event)">
+                <h2>أرسل لنا رسالة</h2>
+                <div class="form-group">
+                    <label>الاسم</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" required>
+                </div>
+                <div class="form-group">
+                    <label>الموضوع</label>
+                    <input type="text" required>
+                </div>
+                <div class="form-group">
+                    <label>الرسالة</label>
+                    <textarea required></textarea>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">إرسال</button>
+            </form>
+        </div>
+
+        <!-- السياسات -->
+        <div class="page" id="policies">
+            <div class="policies-content">
+                <h1>السياسات والشروط</h1>
+
+                <h2>سياسة الشحن والتوصيل</h2>
+                <h3>أوقات التوصيل</h3>
+                <p>تتم عمليات التوصيل يومياً من الساعة 9 صباحاً إلى 9 مساءً</p>
+
+                <h3>رسوم التوصيل</h3>
+                <ul>
+                    <li>حي الضاية: 200 دج</li>
+                    <li>حي لبلاد: 200 دج</li>
+                    <li>حي القرية: 250 دج</li>
+                </ul>
+
+                <h2>سياسة الإرجاع والاستبدال</h2>
+                <p>يمكن استبدال المنتجات التالفة أو المنتهية الصلاحية خلال 24 ساعة من الاستقبال.</p>
+
+                <h3>شروط الإرجاع</h3>
+                <ul>
+                    <li>يجب أن يكون المنتج في حالته الأصلية</li>
+                    <li>التواصل معنا خلال 24 ساعة من استقبال الطلب</li>
+                    <li>توفير صور واضحة للمشكلة</li>
+                </ul>
+
+                <h2>سياسة الخصوصية</h2>
+                <p>نحن نحافظ على خصوصية بيانات عملائنا وفقاً للمعايير الدولية.</p>
+
+                <h3>البيانات المجمعة</h3>
+                <ul>
+                    <li>الاسم ورقم الهاتف</li>
+                    <li>عنوان التوصيل</li>
+                    <li>تاريخ وتفاصيل الطلبات</li>
+                </ul>
+
+                <h3>استخدام البيانات</h3>
+                <ul>
+                    <li>معالجة الطلبات والتوصيل</li>
+                    <li>تحسين خدماتنا</li>
+                    <li>التواصل حول الطلبات والخدمات</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- لوحة الإدارة -->
+        <div class="page" id="adminPanel">
+            <div class="admin-panel">
+                <h1>لوحة الإدارة</h1>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>إجمالي الطلبات</h3>
+                        <div class="value" id="totalOrdersAdmin">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>الطلبات المعلقة</h3>
+                        <div class="value" id="pendingOrdersAdmin">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>إجمالي المبيعات</h3>
+                        <div class="value" id="totalSalesAdmin">0 دج</div>
+                    </div>
+                </div>
+
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="switchAdminTab('products')">المنتجات</button>
+                    <button class="admin-tab" onclick="switchAdminTab('orders')">الطلبات</button>
+                    <button class="admin-tab" onclick="switchAdminTab('reports')">التقارير</button>
+                </div>
+
+                <!-- تبويب المنتجات -->
+                <div class="admin-tab-content active" id="productsTab">
+                    <h2>إدارة المنتجات</h2>
+                    <form onsubmit="addProduct(event)" style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                        <div class="product-form-grid">
+                            <div class="form-group">
+                                <label>اسم المنتج</label>
+                                <input type="text" id="productName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>السعر</label>
+                                <input type="number" id="productPrice" required>
+                            </div>
+                            <div class="form-group">
+                                <label>الكمية</label>
+                                <input type="number" id="productStock" required>
+                            </div>
+                            <div class="form-group">
+                                <label>القسم</label>
+                                <select id="productCategory" required>
+                                    <option value="الفواكه والخضار">الفواكه والخضار</option>
+                                    <option value="الألبان والجبن">الألبان والجبن</option>
+                                    <option value="اللحوم والدواجن">اللحوم والدواجن</option>
+                                    <option value="المشروبات">المشروبات</option>
+                                    <option value="الحبوب والمعكرونة">الحبوب والمعكرونة</option>
+                                    <option value="المعلبات">المعلبات</option>
+                                    <option value="الحلويات">الحلويات</option>
+                                </select>
+                            </div>                            <div class="form-group">
+                                <label>الأيقونة (emoji)</label>
+                                <input type="text" id="productIcon" placeholder="مثال: 🍎" maxlength="2" value="🍎">
+                            </div>
+                            <div class="form-group">
+                                <label>صورة المنتج (1×1) - اختر من جهازك</label>
+                                <input type="file" id="productImage" accept="image/*" onchange="handleImageUpload(event)">
+                                <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 1×1 (500×500 بكسل أو أكبر)</small>
+                                <div id="imagePreview" style="margin-top: 0.8rem; max-width: 100px; max-height: 100px; border-radius: 4px; overflow: hidden; background: var(--light-bg); display: none;">
+                                    <img id="previewImg" style="width: 100%; height: 100%; object-fit: cover;">
+                                </div>
+                            </div>
+                    <div class="form-group">
+                        <label>الوصف</label>
+                        <input type="text" id="productDescription" placeholder="وصف قصير">
+                    </div>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">إضافة منتج</button>
+                    </form>
+
+                    <h3>المنتجات الحالية</h3>
+                    <div id="adminProductsList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;"></div>
+                </div>
+
+                <!-- تبويب الطلبات -->
+                <div class="admin-tab-content" id="ordersTab">
+                    <h2>إدارة الطلبات</h2>
+                    <table class="orders-admin-table">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>الحي</th>
+                                <th>الإجمالي</th>
+                                <th>الحالة</th>
+                                <th>الإجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersList"></tbody>
+                    </table>
+                </div>
+
+                <!-- تبويب التقارير -->
+                <div class="admin-tab-content" id="reportsTab">
+                    <h2>تقارير المبيعات</h2>
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>الحي</th>
+                                <th>عدد الطلبات</th>
+                                <th>إجمالي المبيعات</th>
+                                <th>متوسط الطلب</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- نموذج إعدادات اللوغو -->
+        <div class="confirmation-modal" id="logoSettingsModal">
+            <div class="confirmation-content" style="max-width: 500px;">
+                <h2 style="text-align: center; margin-bottom: 1.5rem;">⚙️ إعدادات اللوغو</h2>
+                <form onsubmit="saveLogo(event)">
+                    <div class="form-group">
+                        <label>تحميل صورة اللوغو</label>
+                        <input type="file" id="logoFile" accept="image/*" onchange="previewLogo(event)">
+                        <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 1×1 (200×200 بكسل)</small>
+                    </div>
+                    <div class="form-group">
+                        <label>معاينة اللوغو:</label>
+                        <div style="background: var(--light-bg); padding: 1rem; border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 100px;">
+                            <img id="logoPreview" style="max-width: 80px; max-height: 80px; border-radius: 6px; object-fit: contain;">
+                        </div>
+                    </div>
+                    <div class="confirmation-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeLogo Settings()">إلغاء</button>
+                        <button type="submit" class="btn">حفظ اللوغو</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- نموذج تسجيل الدخول الإداري -->
+        <div class="confirmation-modal" id="adminLoginModal">
+            <div class="confirmation-content" style="max-width: 400px;">
+                <h2 style="text-align: center; margin-bottom: 1.5rem;">تسجيل الدخول الإداري</h2>
+                <form onsubmit="loginAdmin(event)">
+                    <div class="form-group">
+                        <label>اسم المستخدم</label>
+                        <input type="text" id="adminUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+                    <div class="confirmation-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeAdminLogin()">إلغاء</button>
+                        <button type="submit" class="btn">دخول</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 متجر مصروفي - جميع الحقوق محفوظة</p>
+        <p>للتواصل: 0669986649</p>
+    </footer>
+
+    <script>
+        // رابط API من Google Sheets
+        const API_URL = "https://script.google.com/a/macros/cu-aflou.edu.dz/s/AKfycbwg-StRAPc-BAymZqyRA22ZyDqInx3wBDGuA9xzuTF-YftHGoVtvqEZwVX04HYvO2bThw/exec";
+
+        // إدارة البيانات
+        let products = [];
+        let orders = [];
+        let cart = [];
+        let adminLoggedIn = false;
+        let currentUser = null;
+
+        const ADMIN_USERNAME = 'MOURAD';
+        const ADMIN_PASSWORD = '1998';
+        const WHATSAPP_NUMBER = '0669986649';
+
+        const deliveryFees = {
+            'الضاية': 200,
+            'لبلاد': 200,
+            'القرية': 250
+        };
+
+        const neighborhoods = ['الضاية', 'لبلاد', 'القرية'];
+
+        // تحميل البيانات من Google Sheets
+        async function loadData() {
+            try {
+                // جلب المنتجات من Google Sheets
+                const productsRes = await fetch(`${API_URL}?sheet=products&action=getAll`);
+                const productsJson = await productsRes.json();
+                if (productsJson.success && productsJson.data) {
+                    products = productsJson.data;
+                }
+
+                // جلب الطلبات من Google Sheets
+                const ordersRes = await fetch(`${API_URL}?sheet=orders&action=getAll`);
+                const ordersJson = await ordersRes.json();
+                if (ordersJson.success && ordersJson.data) {
+                    orders = ordersJson.data;
+                }
+
+                // تحميل السلة من localStorage فقط (محلية لكل جهاز)
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) cart = JSON.parse(savedCart);
+
+                updateCartCount();
+                renderProducts();
+            } catch (err) {
+                console.error('خطأ في تحميل البيانات من Google Sheets:', err);
+                alert('حدث خطأ في الاتصال بقاعدة البيانات. حاول لاحقاً');
+                
+                // في حالة الخطأ، نستمر على الأقل بالسلة المحلية
+                const savedCart = localStorage.getItem('cart');
+                if (savedCart) cart = JSON.parse(savedCart);
+                updateCartCount();
+            }
+        }
+
+        // حفظ البيانات (السلة فقط محلياً الآن)
+        function saveData() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
+
+        // نقل الصفحات
+        function goToPage(pageName) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageName).classList.add('active');
+
+            if (pageName === 'adminPanel' && !adminLoggedIn) {
+                showAdminLogin();
+                goToPage('home');
+            }
+
+            if (pageName === 'products') {
+                renderProducts();
+            }
+            if (pageName === 'cart') {
+                renderCart();
+            }
+            if (pageName === 'checkout') {
+                renderCheckout();
+            }
+            if (pageName === 'account') {
+                renderMyOrders();
+            }
+        }
+
+        // تصفية المنتجات
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
+            const category = document.getElementById('categoryFilter')?.value || '';
+            const minPrice = parseFloat(document.getElementById('minPrice')?.value) || 0;
+            const maxPrice = parseFloat(document.getElementById('maxPrice')?.value) || Infinity;
+
+            const filtered = products.filter(p => {
+                return (p.name.toLowerCase().includes(searchTerm) || p.description.toLowerCase().includes(searchTerm)) &&
+                       (!category || p.category === category) &&
+                       p.price >= minPrice &&
+                       p.price <= maxPrice;
+            });
+
+            displayProducts(filtered);
+        }
+
+        function clearFilters() {
+            if (document.getElementById('searchInput')) document.getElementById('searchInput').value = '';
+            if (document.getElementById('categoryFilter')) document.getElementById('categoryFilter').value = '';
+            if (document.getElementById('minPrice')) document.getElementById('minPrice').value = '';
+            if (document.getElementById('maxPrice')) document.getElementById('maxPrice').value = '';
+            renderProducts();
+        }
+
+        function filterByCategory(category) {
+            if (category === 'جميع المنتجات') {
+                displayProducts(products);
+            } else {
+                displayProducts(products.filter(p => p.category === category));
+            }
+        }
+
+        function filterByNeighborhood(neighborhood) {
+            goToPage('products');
+            if (document.getElementById('categoryFilter')) {
+                document.getElementById('categoryFilter').value = '';
+            }
+        }
+
+        // عرض المنتجات
+        function renderProducts() {
+            displayProducts(products);
+        }
+
+        function displayProducts(productsToDisplay) {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+
+            if (productsToDisplay.length === 0) {
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">لا توجد منتجات</p>';
+                return;
+            }
+
+            grid.innerHTML = productsToDisplay.map(product => `
+                <div class="product-card" onclick="viewProduct(${product.id})">
+                    <div class="product-image">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}">` : '<div style="text-align: center; color: #999;">صورة المنتج</div>'}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">${product.price} دج</div>
+                        <div class="product-stock ${product.stock === 0 ? 'stock-out' : product.stock <= 5 ? 'stock-warning' : ''}">
+                            ${product.stock === 0 ? '❌ غير متوفر' : product.stock <= 5 ? `⚠️ ${product.stock} متبقي فقط` : `✓ ${product.stock} متوفر`}
+                        </div>
+                        <button class="btn" onclick="event.stopPropagation(); addToCartDirect(${product.id})" ${product.stock === 0 ? 'disabled' : ''}>
+                            أضف للسلة
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // عرض تفاصيل المنتج
+        function viewProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const detailImage = document.getElementById('detailImage');
+            if (product.image) {
+                detailImage.innerHTML = `<img src="${product.image}" alt="${product.name}">`;
+            } else {
+                detailImage.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">لا توجد صورة</div>`;
+            }
+            document.getElementById('detailName').textContent = product.name;
+            document.getElementById('detailPrice').textContent = product.price + ' دج';
+            document.getElementById('detailCategory').textContent = product.category;
+            document.getElementById('detailDescription').textContent = product.description;
+            document.getElementById('detailStock').innerHTML = product.stock === 0 ?
+                '<span style="color: var(--danger-color);">❌ غير متوفر حالياً</span>' :
+                `<span style="color: var(--primary-color);">✓ ${product.stock} متوفر</span>`;
+
+            document.getElementById('quantityInput').value = 1;
+            document.getElementById('addToCartBtn').disabled = product.stock === 0;
+            document.getElementById('addToCartBtn').textContent = product.stock === 0 ? 'غير متوفر' : 'أضف إلى السلة';
+
+            currentProduct = product;
+            goToPage('productDetail');
+        }
+
+        let currentProduct = null;
+
+        function changeQuantity(change) {
+            const input = document.getElementById('quantityInput');
+            let value = parseInt(input.value) + change;
+            if (value < 1) value = 1;
+            if (currentProduct && value > currentProduct.stock) value = currentProduct.stock;
+            input.value = value;
+        }
+
+        // إضافة للسلة
+        function addToCart() {
+            if (!currentProduct) return;
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+            addToCartItem(currentProduct.id, quantity);
+        }
+
+        function addToCartDirect(productId) {
+            addToCartItem(productId, 1);
+        }
+
+        function addToCartItem(productId, quantity) {
+            const product = products.find(p => p.id === productId);
+            if (!product || product.stock === 0) return;
+
+            const existing = cart.find(item => item.id === productId);
+            if (existing) {
+                existing.quantity += quantity;
+                if (existing.quantity > product.stock) {
+                    existing.quantity = product.stock;
+                }
+            } else {
+                cart.push({ id: productId, quantity: Math.min(quantity, product.stock) });
+            }
+
+            saveData();
+            updateCartCount();
+            alert('تم الإضافة إلى السلة بنجاح');
+        }
+
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        // عرض السلة
+        function renderCart() {
+            const cartContent = document.getElementById('cartContent');
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="cart-empty">
+                        <h2>سلتك فارغة</h2>
+                        <button class="btn" onclick="goToPage('products')">ابدأ التسوق</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let total = 0;
+            let tableHTML = `
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>المنتج</th>
+                            <th>السعر</th>
+                            <th>الكمية</th>
+                            <th>الإجمالي</th>
+                            <th>حذف</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (!product) return;
+
+                const itemTotal = product.price * item.quantity;
+                total += itemTotal;
+
+                tableHTML += `
+                    <tr>
+                        <td>${product.name}</td>
+                        <td>${product.price} دج</td>
+                        <td>
+                            <input type="number" value="${item.quantity}" min="1" max="${product.stock}"
+                                onchange="updateCartItem(${product.id}, this.value)">
+                        </td>
+                        <td>${itemTotal} دج</td>
+                        <td><button class="btn btn-secondary" onclick="removeFromCart(${product.id})">حذف</button></td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                    </tbody>
+                </table>
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>المجموع:</span>
+                        <span>${total} دج</span>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="goToPage('products')" style="flex: 1;">متابعة التسوق</button>
+                        <button class="btn" onclick="goToPage('checkout')" style="flex: 1;">إكمال الطلب</button>
+                    </div>
+                </div>
+            `;
+
+            cartContent.innerHTML = tableHTML;
+        }
+
+        function updateCartItem(productId, quantity) {
+            const item = cart.find(c => c.id === productId);
+            const product = products.find(p => p.id === productId);
+
+            if (item && product) {
+                quantity = parseInt(quantity);
+                if (quantity < 1) quantity = 1;
+                if (quantity > product.stock) quantity = product.stock;
+                item.quantity = quantity;
+                saveData();
+                renderCart();
+                updateCartCount();
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveData();
+            renderCart();
+            updateCartCount();
+        }
+
+        // الدفع والتأكيد
+        function renderCheckout() {
+            let total = 0;
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (product) total += product.price * item.quantity;
+            });
+
+            document.getElementById('checkoutTotal').textContent = total;
+            updateDeliveryFee();
+        }
+
+        function updateDeliveryFee() {
+            const neighborhood = document.getElementById('customerNeighborhood').value;
+            const fee = deliveryFees[neighborhood] || 0;
+            document.getElementById('deliveryFee').textContent = fee;
+        }
+
+        function processCheckout(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const neighborhood = document.getElementById('customerNeighborhood').value;
+            const address = document.getElementById('customerAddress').value;
+            const deliveryFee = deliveryFees[neighborhood];
+
+            let total = 0;
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (product) total += product.price * item.quantity;
+            });
+
+            // عرض نموذج التأكيد
+            document.getElementById('confName').textContent = name;
+            document.getElementById('confPhone').textContent = phone;
+            document.getElementById('confNeighborhood').textContent = neighborhood;
+            document.getElementById('confAddress').textContent = address;
+            document.getElementById('confDeliveryFee').textContent = deliveryFee + ' دج';
+            document.getElementById('confTotal').textContent = (total + deliveryFee) + ' دج';
+
+            document.getElementById('confirmationModal').classList.add('active');
+        }
+
+        function closeConfirmation() {
+            document.getElementById('confirmationModal').classList.remove('active');
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const neighborhood = document.getElementById('customerNeighborhood').value;
+            const address = document.getElementById('customerAddress').value;
+
+            const orderId = 'ORD' + Date.now();
+            let total = 0;
+            let orderDetails = '';
+            let orderItems = [];
+
+            cart.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (product) {
+                    total += product.price * item.quantity;
+                    const itemTotal = product.price * item.quantity;
+                    orderDetails += `${product.name} (${item.quantity}x) - ${itemTotal} دج\n`;
+                    orderItems.push({
+                        name: product.name,
+                        quantity: item.quantity,
+                        price: product.price,
+                        total: itemTotal
+                    });
+                }
+            });
+
+            const deliveryFee = deliveryFees[neighborhood];
+            const finalTotal = total + deliveryFee;
+
+            // إنشاء الطلب
+            const order = {
+                orderId: orderId,
+                customerName: name,
+                customerPhone: phone,
+                neighborhood: neighborhood,
+                address: address,
+                total: total,
+                deliveryFee: deliveryFee,
+                finalTotal: finalTotal,
+                date: new Date().toLocaleString('ar-SA'),
+                status: 'معلق'
+            };
+
+            // حفظ الطلب في Google Sheets
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'addOrder',
+                        order: order
+                    })
+                });
+                
+                const json = await res.json();
+                if (json.success) {
+                    orders.push(order);
+                } else {
+                    console.error('Warning: Order not saved to Google Sheets', json.error);
+                }
+            } catch (err) {
+                console.error('Warning: Could not save order to Google Sheets:', err);
+                orders.push(order);
+            }
+
+            saveData();
+
+            // طباعة الفاتورة للزبون
+            printInvoice(orderId, 'customer', {
+                name, phone, neighborhood, address,
+                items: orderItems, total, deliveryFee, finalTotal,
+                date: order.date
+            });
+
+            // إرسال رسالة واتساب تلقائية
+            const whatsappMessage = `*طلب جديد #${orderId}*\n\n👤 العميل: ${name}\n📱 الهاتف: ${phone}\n🏘️ الحي: ${neighborhood}\n📍 العنوان: ${address}\n\n📦 المنتجات:\n${orderDetails}\n💰 الإجمالي: ${total} دج\n🚚 التوصيل: ${deliveryFee} دج\n💵 المجموع النهائي: ${finalTotal} دج`;
+
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+            window.open(whatsappUrl, '_blank');
+
+            // حذف السلة
+            cart = [];
+            saveData();
+            updateCartCount();
+
+            closeConfirmation();
+        }
+
+        function printInvoice(orderId, type, data) {
+            const printWindow = window.open('', '', 'height=600,width=400');
+            const isAdmin = type === 'admin';
+
+            const invoiceHTML = `
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>فاتورة طلب #${orderId}</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                            background: white;
+                            color: #333;
+                        }
+                        .invoice-container {
+                            max-width: 400px;
+                            margin: 0 auto;
+                            border: 2px solid #10b981;
+                            padding: 20px;
+                            border-radius: 8px;
+                        }
+                        .header {
+                            text-align: center;
+                            border-bottom: 2px solid #10b981;
+                            padding-bottom: 15px;
+                            margin-bottom: 15px;
+                        }
+                        .header h1 {
+                            margin: 0;
+                            color: #10b981;
+                            font-size: 24px;
+                        }
+                        .header p {
+                            margin: 5px 0;
+                            font-size: 12px;
+                            color: #666;
+                        }
+                        .invoice-type {
+                            text-align: center;
+                            background: ${isAdmin ? '#fef3c7' : '#dcfce7'};
+                            padding: 8px;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                            font-weight: bold;
+                            color: ${isAdmin ? '#92400e' : '#15803d'};
+                        }
+                        .order-info {
+                            background: #f3f4f6;
+                            padding: 10px;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                            font-size: 13px;
+                        }
+                        .order-info p {
+                            margin: 5px 0;
+                        }
+                        .order-info strong {
+                            color: #10b981;
+                        }
+                        .items-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-bottom: 15px;
+                            font-size: 12px;
+                        }
+                        .items-table th {
+                            background: #10b981;
+                            color: white;
+                            padding: 8px;
+                            text-align: right;
+                            border: 1px solid #059669;
+                        }
+                        .items-table td {
+                            padding: 8px;
+                            border: 1px solid #e5e7eb;
+                            text-align: right;
+                        }
+                        .items-table tr:nth-child(even) {
+                            background: #f9fafb;
+                        }
+                        .totals {
+                            background: #f3f4f6;
+                            padding: 10px;
+                            border-radius: 4px;
+                            margin-bottom: 15px;
+                        }
+                        .total-row {
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 5px 0;
+                            font-size: 13px;
+                            border-bottom: 1px solid #e5e7eb;
+                        }
+                        .total-row:last-child {
+                            border-bottom: none;
+                        }
+                        .grand-total {
+                            display: flex;
+                            justify-content: space-between;
+                            padding: 10px 0;
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #10b981;
+                        }
+                        .footer {
+                            text-align: center;
+                            border-top: 2px solid #10b981;
+                            padding-top: 15px;
+                            margin-top: 15px;
+                            font-size: 11px;
+                            color: #666;
+                        }
+                        .footer p {
+                            margin: 5px 0;
+                        }
+                        .print-button {
+                            width: 100%;
+                            padding: 12px;
+                            background: #10b981;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            font-weight: bold;
+                            margin-top: 15px;
+                        }
+                        @media print {
+                            .print-button {
+                                display: none;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 0;
+                            }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="invoice-container">                    <div class="header">
+                        <h1>مصروفي</h1>
+                        <p>متجر البقالة الإلكترونية</p>
+                    </div>
+
+                        <div class="invoice-type">
+                            ${isAdmin ? 'فاتورة مجهز الطلبية' : 'فاتورة العميل'}
+                        </div>
+
+                        <div class="order-info">
+                            <p><strong>رقم الطلب:</strong> ${orderId}</p>
+                            <p><strong>التاريخ والوقت:</strong> ${data.date}</p>
+                            <p><strong>العميل:</strong> ${data.name}</p>
+                            <p><strong>الهاتف:</strong> ${data.phone}</p>
+                            <p><strong>الحي:</strong> ${data.neighborhood}</p>
+                            <p><strong>العنوان:</strong> ${data.address}</p>
+                        </div>
+
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>المنتج</th>
+                                    <th>الكمية</th>
+                                    <th>السعر</th>
+                                    <th>الإجمالي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.items.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>${item.price} دج</td>
+                                        <td>${item.total} دج</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+
+                        <div class="totals">
+                            <div class="total-row">
+                                <span>المجموع:</span>
+                                <span>${data.total} دج</span>
+                            </div>
+                            <div class="total-row">
+                                <span>رسوم التوصيل:</span>
+                                <span>${data.deliveryFee} دج</span>
+                            </div>
+                            <div class="grand-total">
+                                <span>المجموع النهائي:</span>
+                                <span>${data.finalTotal} دج</span>
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p><strong>طريقة الدفع:</strong> الدفع عند الاستلام (COD)</p>
+                            <p>ساعات العمل: من 9 صباحاً إلى 9 مساءً</p>
+                            <p>للتواصل: 0669986649</p>
+                            <p style="margin-top: 10px; border-top: 1px solid #e5e7eb; padding-top: 10px;">
+                                شكراً لتعاملك معنا
+                            </p>
+                        </div>
+
+                        <button class="print-button" onclick="window.print()">طباعة الفاتورة</button>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(invoiceHTML);
+            printWindow.document.close();
+        }
+
+        function printOrderInvoice(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            const items = order.items.map(item => {
+                const product = products.find(p => p.id === item.id);
+                return {
+                    name: product.name,
+                    quantity: item.quantity,
+                    price: product.price,
+                    total: product.price * item.quantity
+                };
+            });
+
+            printInvoice(orderId, 'admin', {
+                name: order.customerName,
+                phone: order.customerPhone,
+                neighborhood: order.neighborhood,
+                address: order.address,
+                items: items,
+                total: order.total,
+                deliveryFee: order.deliveryFee,
+                finalTotal: order.finalTotal,
+                date: order.date
+            });
+        }
+
+        // تتبع الطلب
+        function searchOrder() {
+            const orderId = document.getElementById('trackingOrderId').value;
+            const order = orders.find(o => o.id === orderId);
+
+            const result = document.getElementById('trackingResult');
+
+            if (!order) {
+                result.innerHTML = '<p style="color: var(--danger-color);">لم يتم العثور على الطلب</p>';
+                return;
+            }
+
+            let statusHTML = '<div class="order-status-timeline">';
+
+            const statuses = [
+                { name: 'تم الاستقبال', value: 'معلق' },
+                { name: 'تم التأكيد', value: 'مؤكد' },
+                { name: 'في الطريق', value: 'قيد التوصيل' },
+                { name: 'تم التسليم', value: 'مسلم' }
+            ];
+
+            statuses.forEach((status, index) => {
+                const isCompleted = ['مؤكد', 'قيد التوصيل', 'مسلم'].includes(order.status) && index < statuses.length - 1;
+                const isCurrent = order.status === status.value;
+
+                statusHTML += `
+                    <div class="status-step ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}">
+                        <div class="status-dot">${index + 1}</div>
+                        <div class="status-info">
+                            <h4>${status.name}</h4>
+                            <p>${isCurrent ? '📍 حالياً' : isCompleted ? '✓ تم' : '⏳ قريباً'}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            statusHTML += '</div>';
+
+            result.innerHTML = `
+                <div style="background: white; padding: 1.5rem; border-radius: 8px;">
+                    <h3>رقم الطلب: ${order.id}</h3>
+                    <p>الحالة الحالية: <strong>${order.status}</strong></p>
+                    <p>التاريخ: ${order.date}</p>
+                    ${statusHTML}
+                </div>
+            `;
+        }
+
+        // حساب العميل
+        function renderMyOrders() {
+            const myOrdersList = document.getElementById('myOrdersList');
+
+            if (orders.length === 0) {
+                myOrdersList.innerHTML = '<p style="color: var(--text-light);">لا توجد طلبات سابقة</p>';
+                return;
+            }
+
+            myOrdersList.innerHTML = orders.map(order => `
+                <div class="order-item">
+                    <div>
+                        <strong>${order.id}</strong>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">${order.date}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p>${order.finalTotal} دج</p>
+                        <span class="status-badge ${order.status === 'معلق' ? 'pending' : order.status === 'مؤكد' ? 'confirmed' : order.status === 'قيد التوصيل' ? 'shipped' : order.status === 'مسلم' ? 'delivered' : 'cancelled'}">[${order.status}]</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // الإدارة
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').classList.add('active');
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').classList.remove('active');
+        }
+
+        function loginAdmin(event) {
+            event.preventDefault();
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                adminLoggedIn = true;
+                closeAdminLogin();
+                goToPage('adminPanel');
+                loadAdminPanel();
+            } else {
+                alert('بيانات الدخول غير صحيحة');
+            }
+        }
+
+        function loadAdminPanel() {
+            updateAdminStats();
+            renderAdminProducts();
+            renderAdminOrders();
+            renderReports();
+        }
+
+        function updateAdminStats() {
+            document.getElementById('totalOrdersAdmin').textContent = orders.length;
+            document.getElementById('pendingOrdersAdmin').textContent = orders.filter(o => o.status === 'معلق').length;
+
+            const totalSales = orders.reduce((sum, order) => sum + order.finalTotal, 0);
+            document.getElementById('totalSalesAdmin').textContent = totalSales + ' دج';
+        }
+
+        let uploadedImageData = '';
+        let logoImageData = '';
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImageData = e.target.result;
+                    const preview = document.getElementById('imagePreview');
+                    const previewImg = document.getElementById('previewImg');
+                    previewImg.src = uploadedImageData;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function addProduct(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('productName').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            const category = document.getElementById('productCategory').value;
+            const icon = document.getElementById('productIcon').value || '📦';
+            const image = uploadedImageData || '';
+            const description = document.getElementById('productDescription').value;
+
+            const newProduct = {
+                name,
+                price,
+                stock,
+                category,
+                icon,
+                image,
+                description
+            };
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'addProduct',
+                        product: newProduct
+                    })
+                });
+
+                const json = await res.json();
+                if (json.success) {
+                    // إضافة المنتج مع ID من Google Sheets
+                    const productWithId = {
+                        id: json.data.id,
+                        ...newProduct
+                    };
+                    products.push(productWithId);
+
+                    event.target.reset();
+                    uploadedImageData = '';
+                    document.getElementById('imagePreview').style.display = 'none';
+                    renderAdminProducts();
+                    renderProducts();
+                    alert('✅ تم إضافة المنتج بنجاح إلى قاعدة البيانات');
+                } else {
+                    console.error('Error:', json.error);
+                    alert('❌ حدث خطأ أثناء إضافة المنتج');
+                }
+            } catch (err) {
+                console.error('خطأ في الاتصال بـ Google Sheets:', err);
+                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            }
+        }
+
+        function renderAdminProducts() {
+            const list = document.getElementById('adminProductsList');
+
+            list.innerHTML = products.map(product => `
+                <div class="card" style="padding: 1rem; background: var(--light-bg);">
+                    <div style="margin-bottom: 0.5rem;">
+                        ${product.image ? `<img src="${product.image}" alt="${product.name}" style="width: 100%; height: 80px; object-fit: cover; border-radius: 4px; margin-bottom: 0.5rem;">` : '<div style="width: 100%; height: 80px; background: #e5e7eb; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #999; margin-bottom: 0.5rem;">لا توجد صورة</div>'}
+                    </div>
+                    <h4>${product.name}</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin: 0.3rem 0;">السعر: ${product.price} دج</p>
+                    <p style="font-size: 0.9rem; color: var(--text-light); margin: 0.3rem 0;">المخزون: ${product.stock}</p>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn" style="flex: 1; padding: 0.4rem;" onclick="editProduct(${product.id})">تعديل</button>
+                        <button class="btn btn-secondary" style="flex: 1; padding: 0.4rem;" onclick="deleteProduct(${product.id})">حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const newPrice = prompt('السعر الجديد:', product.price);
+            const newStock = prompt('المخزون الجديد:', product.stock);
+
+            if (newPrice === null && newStock === null) return;
+
+            if (newPrice !== null) product.price = parseFloat(newPrice);
+            if (newStock !== null) product.stock = parseInt(newStock);
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateProduct',
+                        product: product
+                    })
+                });
+
+                const json = await res.json();
+                if (json.success) {
+                    renderAdminProducts();
+                    renderProducts();
+                    alert('✅ تم تحديث المنتج في قاعدة البيانات');
+                } else {
+                    console.error('Error:', json.error);
+                    alert('❌ حدث خطأ أثناء تحديث المنتج');
+                }
+            } catch (err) {
+                console.error('خطأ في تحديث المنتج:', err);
+                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            }
+        }
+
+        async function deleteProduct(productId) {
+            if (!confirm('هل تريد حذف هذا المنتج؟')) return;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'deleteProduct',
+                        productId: productId
+                    })
+                });
+
+                const json = await res.json();
+                if (json.success && json.data.deleted) {
+                    products = products.filter(p => p.id != productId);
+                    renderAdminProducts();
+                    renderProducts();
+                    alert('✅ تم حذف المنتج من قاعدة البيانات');
+                } else {
+                    alert('❌ تعذر حذف المنتج');
+                }
+            } catch (err) {
+                console.error('خطأ في حذف المنتج:', err);
+                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            }
+        }
+
+        function renderAdminOrders() {
+            const list = document.getElementById('adminOrdersList');
+
+            if (orders.length === 0) {
+                list.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-light);">لا توجد طلبات</td></tr>';
+                return;
+            }
+
+            list.innerHTML = orders.map(order => `
+                <tr>
+                    <td>${order.id}</td>
+                    <td>${order.customerName}</td>
+                    <td>${order.neighborhood}</td>
+                    <td>${order.finalTotal} دج</td>
+                    <td>
+                        <select class="action-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                            <option value="معلق" ${order.status === 'معلق' ? 'selected' : ''}>معلق</option>
+                            <option value="مؤكد" ${order.status === 'مؤكد' ? 'selected' : ''}>مؤكد</option>
+                            <option value="قيد التوصيل" ${order.status === 'قيد التوصيل' ? 'selected' : ''}>قيد التوصيل</option>
+                            <option value="مسلم" ${order.status === 'مسلم' ? 'selected' : ''}>مسلم</option>
+                            <option value="ملغى" ${order.status === 'ملغى' ? 'selected' : ''}>ملغى</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="viewOrderDetails('${order.id}')">عرض</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function updateOrderStatus(orderId, newStatus) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.status = newStatus;
+                
+                // تحديث الحالة في Google Sheets
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            action: 'updateOrderStatus',
+                            orderId: orderId,
+                            status: newStatus
+                        })
+                    });
+
+                    const json = await res.json();
+                    if (!json.success) {
+                        console.error('Warning: Could not update order status in Google Sheets', json.error);
+                    }
+                } catch (err) {
+                    console.error('Warning: Could not update order status:', err);
+                }
+                
+                updateAdminStats();
+            }
+        }
+
+        function viewOrderDetails(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            let details = `الطلب: ${order.id}\nالعميل: ${order.customerName}\nالهاتف: ${order.customerPhone}\nالحي: ${order.neighborhood}\nالعنوان: ${order.address}\n\nالمنتجات:\n`;
+
+            order.items.forEach(item => {
+                const product = products.find(p => p.id === item.id);
+                if (product) {
+                    details += `- ${product.name} (${item.quantity}x) = ${product.price * item.quantity} دج\n`;
+                }
+            });
+
+            details += `\nالمجموع: ${order.total} دج\nالتوصيل: ${order.deliveryFee} دج\nالإجمالي النهائي: ${order.finalTotal} دج`;
+
+            alert(details);
+        }
+
+        function renderReports() {
+            const tbody = document.getElementById('reportsTableBody');
+
+            const report = {};
+            neighborhoods.forEach(n => {
+                report[n] = { orders: 0, sales: 0 };
+            });
+
+            orders.forEach(order => {
+                if (report[order.neighborhood]) {
+                    report[order.neighborhood].orders++;
+                    report[order.neighborhood].sales += order.finalTotal;
+                }
+            });
+
+            tbody.innerHTML = Object.entries(report).map(([neighborhood, data]) => `
+                <tr>
+                    <td>${neighborhood}</td>
+                    <td>${data.orders}</td>
+                    <td>${data.sales} دج</td>
+                    <td>${data.orders > 0 ? (data.sales / data.orders).toFixed(0) + ' دج' : '0 دج'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // معالجة رسالة التواصل
+        function sendContactMessage(event) {
+            event.preventDefault();
+            alert('شكراً لتواصلك معنا، سيتم الرد عليك قريباً');
+            event.target.reset();
+        }
+
+        // إدارة اللوغو
+        function showLogoSettings() {
+            document.getElementById('logoSettingsModal').classList.add('active');
+            const logoImage = document.getElementById('logoImage');
+            document.getElementById('logoPreview').src = logoImage.src;
+        }
+
+        function closeLogoSettings() {
+            document.getElementById('logoSettingsModal').classList.remove('active');
+        }
+
+        function previewLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoImageData = e.target.result;
+                    document.getElementById('logoPreview').src = logoImageData;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function saveLogo(event) {
+            event.preventDefault();
+            if (logoImageData) {
+                localStorage.setItem('storedLogo', logoImageData);
+                document.getElementById('logoImage').src = logoImageData;
+                alert('تم حفظ اللوغو بنجاح');
+                closeLogoSettings();
+            } else {
+                alert('يرجى تحميل صورة اللوغو أولاً');
+            }
+        }
+
+        // تحميل اللوغو المحفوظ
+        function loadLogo() {
+            const savedLogo = localStorage.getItem('storedLogo');
+            if (savedLogo) {
+                document.getElementById('logoImage').src = savedLogo;
+            }
+        }
+
+        // تحميل البيانات عند فتح الصفحة
+        window.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            loadLogo();
+        });
+    </script>
+</body>
+</html>
