@@ -144,7 +144,6 @@
             display: block;
         }
 
-        /* الصفحة الرئيسية */
         .hero {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
@@ -196,7 +195,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* الأقسام */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -224,7 +222,6 @@
             color: white;
         }
 
-        /* قائمة المنتجات */
         .products-section {
             display: flex;
             gap: 2rem;
@@ -402,7 +399,6 @@
             cursor: not-allowed;
         }
 
-        /* صفحة المنتج */
         .product-detail {
             background: white;
             padding: 2rem;
@@ -494,7 +490,6 @@
             border-radius: 4px;
         }
 
-        /* السلة */
         .cart-empty {
             text-align: center;
             padding: 3rem;
@@ -561,7 +556,6 @@
             color: var(--primary-color);
         }
 
-        /* الدفع والتأكيد */
         .checkout-form {
             background: white;
             padding: 2rem;
@@ -660,7 +654,6 @@
             flex: 1;
         }
 
-        /* تتبع الطلب */
         .order-tracking {
             background: white;
             padding: 2rem;
@@ -727,7 +720,6 @@
             font-size: 0.9rem;
         }
 
-        /* حساب العميل */
         .account-section {
             background: white;
             padding: 2rem;
@@ -752,7 +744,6 @@
             align-items: center;
         }
 
-        /* التواصل والسياسات */
         .contact-form {
             background: white;
             padding: 2rem;
@@ -802,7 +793,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* لوحة الإدارة */
         .admin-panel {
             background: white;
             padding: 2rem;
@@ -1183,6 +1173,10 @@
                 <p style="text-align: center; color: var(--text-light); margin-bottom: 1.5rem;">يرجى التحقق من معلومات طلبك قبل إرساله</p>
 
                 <div class="confirmation-item">
+                    <strong>رقم الطلب:</strong>
+                    <span id="confOrderId" style="font-size: 1.3rem; color: var(--primary-color); font-weight: bold;"></span>
+                </div>
+                <div class="confirmation-item">
                     <strong>الاسم:</strong>
                     <span id="confName"></span>
                 </div>
@@ -1387,22 +1381,23 @@
                                     <option value="المعلبات">المعلبات</option>
                                     <option value="الحلويات">الحلويات</option>
                                 </select>
-                            </div>                            <div class="form-group">
+                            </div>
+                            <div class="form-group">
                                 <label>الأيقونة (emoji)</label>
                                 <input type="text" id="productIcon" placeholder="مثال: 🍎" maxlength="2" value="🍎">
                             </div>
                             <div class="form-group">
-                                <label>صورة المنتج (1×1) - اختر من جهازك</label>
+                                <label>صورة المنتج (1×1)</label>
                                 <input type="file" id="productImage" accept="image/*" onchange="handleImageUpload(event)">
-                                <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 1×1 (500×500 بكسل أو أكبر)</small>
+                                <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 500×500 بكسل</small>
                                 <div id="imagePreview" style="margin-top: 0.8rem; max-width: 100px; max-height: 100px; border-radius: 4px; overflow: hidden; background: var(--light-bg); display: none;">
                                     <img id="previewImg" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                             </div>
-                    <div class="form-group">
-                        <label>الوصف</label>
-                        <input type="text" id="productDescription" placeholder="وصف قصير">
-                    </div>
+                            <div class="form-group">
+                                <label>الوصف</label>
+                                <input type="text" id="productDescription" placeholder="وصف قصير">
+                            </div>
                         </div>
                         <button type="submit" class="btn" style="width: 100%;">إضافة منتج</button>
                     </form>
@@ -1419,10 +1414,11 @@
                             <tr>
                                 <th>رقم الطلب</th>
                                 <th>العميل</th>
+                                <th>الهاتف</th>
                                 <th>الحي</th>
                                 <th>الإجمالي</th>
                                 <th>الحالة</th>
-                                <th>الإجراء</th>
+                                <th style="width: 140px;">الإجراء</th>
                             </tr>
                         </thead>
                         <tbody id="adminOrdersList"></tbody>
@@ -1455,7 +1451,7 @@
                     <div class="form-group">
                         <label>تحميل صورة اللوغو</label>
                         <input type="file" id="logoFile" accept="image/*" onchange="previewLogo(event)">
-                        <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 1×1 (200×200 بكسل)</small>
+                        <small style="color: var(--text-light); display: block; margin-top: 0.3rem;">الحجم الموصى به: 200×200 بكسل</small>
                     </div>
                     <div class="form-group">
                         <label>معاينة اللوغو:</label>
@@ -1464,7 +1460,7 @@
                         </div>
                     </div>
                     <div class="confirmation-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="closeLogo Settings()">إلغاء</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeLogoSettings()">إلغاء</button>
                         <button type="submit" class="btn">حفظ اللوغو</button>
                     </div>
                 </form>
@@ -1499,8 +1495,8 @@
     </footer>
 
     <script>
-        // رابط API من Google Sheets
-        const API_URL = "https://script.google.com/a/macros/cu-aflou.edu.dz/s/AKfycbwg-StRAPc-BAymZqyRA22ZyDqInx3wBDGuA9xzuTF-YftHGoVtvqEZwVX04HYvO2bThw/exec";
+        // ربط بواجهة Google Sheets
+        const API_URL = "https://script.google.com/macros/s/AKfycbyVSA4vMU4tXinmkmYQjRcc1RhD05PHgbhrMDh9jN5L9_CidDiea0rVzbMQGCN-_TqPgw/exec";
 
         // إدارة البيانات
         let products = [];
@@ -1508,10 +1504,21 @@
         let cart = [];
         let adminLoggedIn = false;
         let currentUser = null;
+        let currentUserPhone = "";
 
         const ADMIN_USERNAME = 'MOURAD';
         const ADMIN_PASSWORD = '1998';
         const WHATSAPP_NUMBER = '0669986649';
+
+        // نظام أرقام الطلبات مع التاريخ 📅
+        function getOrderNumber() {
+            const now = new Date();
+            const year = now.getFullYear().toString().slice(-2);
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `${year}${month}${day}-${random}`;
+        }
 
         const deliveryFees = {
             'الضاية': 200,
@@ -1521,46 +1528,43 @@
 
         const neighborhoods = ['الضاية', 'لبلاد', 'القرية'];
 
-        // تحميل البيانات من Google Sheets
+        // تحميل البيانات من Google Sheets + السلة من localStorage
         async function loadData() {
             try {
-                // جلب المنتجات من Google Sheets
+                // جلب المنتجات
                 const productsRes = await fetch(`${API_URL}?sheet=products&action=getAll`);
                 const productsJson = await productsRes.json();
-                if (productsJson.success && productsJson.data) {
-                    products = productsJson.data;
+                if (productsJson.success) {
+                    products = productsJson.data || [];
                 }
 
-                // جلب الطلبات من Google Sheets
+                // جلب الطلبات
                 const ordersRes = await fetch(`${API_URL}?sheet=orders&action=getAll`);
                 const ordersJson = await ordersRes.json();
-                if (ordersJson.success && ordersJson.data) {
-                    orders = ordersJson.data;
+                if (ordersJson.success) {
+                    orders = ordersJson.data || [];
                 }
 
-                // تحميل السلة من localStorage فقط (محلية لكل جهاز)
+                // تحميل السلة المحلية
                 const savedCart = localStorage.getItem('cart');
                 if (savedCart) cart = JSON.parse(savedCart);
 
                 updateCartCount();
                 renderProducts();
             } catch (err) {
-                console.error('خطأ في تحميل البيانات من Google Sheets:', err);
-                alert('حدث خطأ في الاتصال بقاعدة البيانات. حاول لاحقاً');
-                
-                // في حالة الخطأ، نستمر على الأقل بالسلة المحلية
+                console.error("خطأ في الاتصال بقاعدة البيانات:", err);
+                alert("❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً");
                 const savedCart = localStorage.getItem('cart');
                 if (savedCart) cart = JSON.parse(savedCart);
                 updateCartCount();
             }
         }
 
-        // حفظ البيانات (السلة فقط محلياً الآن)
+        // حفظ السلة فقط محلياً
         function saveData() {
             localStorage.setItem('cart', JSON.stringify(cart));
         }
 
-        // نقل الصفحات
         function goToPage(pageName) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
@@ -1586,7 +1590,6 @@
             }
         }
 
-        // تصفية المنتجات
         function applyFilters() {
             const searchTerm = document.getElementById('searchInput')?.value.toLowerCase() || '';
             const category = document.getElementById('categoryFilter')?.value || '';
@@ -1626,7 +1629,6 @@
             }
         }
 
-        // عرض المنتجات
         function renderProducts() {
             displayProducts(products);
         }
@@ -1659,7 +1661,6 @@
             `).join('');
         }
 
-        // عرض تفاصيل المنتج
         function viewProduct(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
@@ -1696,7 +1697,6 @@
             input.value = value;
         }
 
-        // إضافة للسلة
         function addToCart() {
             if (!currentProduct) return;
             const quantity = parseInt(document.getElementById('quantityInput').value);
@@ -1731,7 +1731,6 @@
             document.getElementById('cartCount').textContent = count;
         }
 
-        // عرض السلة
         function renderCart() {
             const cartContent = document.getElementById('cartContent');
 
@@ -1821,7 +1820,6 @@
             updateCartCount();
         }
 
-        // الدفع والتأكيد
         function renderCheckout() {
             let total = 0;
             cart.forEach(item => {
@@ -1854,7 +1852,9 @@
                 if (product) total += product.price * item.quantity;
             });
 
-            // عرض نموذج التأكيد
+            const orderId = getOrderNumber();
+
+            document.getElementById('confOrderId').textContent = orderId;
             document.getElementById('confName').textContent = name;
             document.getElementById('confPhone').textContent = phone;
             document.getElementById('confNeighborhood').textContent = neighborhood;
@@ -1875,7 +1875,7 @@
             const neighborhood = document.getElementById('customerNeighborhood').value;
             const address = document.getElementById('customerAddress').value;
 
-            const orderId = 'ORD' + Date.now();
+            const orderId = document.getElementById('confOrderId').textContent;
             let total = 0;
             let orderDetails = '';
             let orderItems = [];
@@ -1898,13 +1898,13 @@
             const deliveryFee = deliveryFees[neighborhood];
             const finalTotal = total + deliveryFee;
 
-            // إنشاء الطلب
             const order = {
-                orderId: orderId,
+                id: orderId,
                 customerName: name,
                 customerPhone: phone,
                 neighborhood: neighborhood,
                 address: address,
+                items: [...cart],
                 total: total,
                 deliveryFee: deliveryFee,
                 finalTotal: finalTotal,
@@ -1915,45 +1915,57 @@
             // حفظ الطلب في Google Sheets
             try {
                 const res = await fetch(API_URL, {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
-                        action: 'addOrder',
-                        order: order
+                        action: "addOrder",
+                        order: {
+                            orderId: orderId,
+                            customerName: name,
+                            customerPhone: phone,
+                            neighborhood: neighborhood,
+                            address: address,
+                            total: total,
+                            deliveryFee: deliveryFee,
+                            finalTotal: finalTotal,
+                            status: "معلق",
+                            date: order.date
+                        }
                     })
                 });
-                
                 const json = await res.json();
-                if (json.success) {
-                    orders.push(order);
+                if (!json.success) {
+                    console.error(json.error);
+                    alert("تم إرسال الطلب للواتساب لكن لم يُحفظ في قاعدة البيانات");
                 } else {
-                    console.error('Warning: Order not saved to Google Sheets', json.error);
+                    orders.push(order);
                 }
-            } catch (err) {
-                console.error('Warning: Could not save order to Google Sheets:', err);
-                orders.push(order);
+            } catch (e) {
+                console.error(e);
+                alert("تم إرسال الطلب للواتساب لكن حدث خطأ في حفظ الطلب");
             }
 
-            saveData();
+            // تخزين هاتف الزبون
+            currentUserPhone = phone;
+            localStorage.setItem("customerPhone", phone);
 
-            // طباعة الفاتورة للزبون
             printInvoice(orderId, 'customer', {
                 name, phone, neighborhood, address,
                 items: orderItems, total, deliveryFee, finalTotal,
                 date: order.date
             });
 
-            // إرسال رسالة واتساب تلقائية
             const whatsappMessage = `*طلب جديد #${orderId}*\n\n👤 العميل: ${name}\n📱 الهاتف: ${phone}\n🏘️ الحي: ${neighborhood}\n📍 العنوان: ${address}\n\n📦 المنتجات:\n${orderDetails}\n💰 الإجمالي: ${total} دج\n🚚 التوصيل: ${deliveryFee} دج\n💵 المجموع النهائي: ${finalTotal} دج`;
 
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
             window.open(whatsappUrl, '_blank');
 
-            // حذف السلة
             cart = [];
             saveData();
             updateCartCount();
 
             closeConfirmation();
+            alert("تم إرسال طلبك بنجاح! ✅");
+            goToPage('home');
         }
 
         function printInvoice(orderId, type, data) {
@@ -1967,147 +1979,36 @@
                     <meta charset="UTF-8">
                     <title>فاتورة طلب #${orderId}</title>
                     <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            margin: 0;
-                            padding: 20px;
-                            background: white;
-                            color: #333;
-                        }
-                        .invoice-container {
-                            max-width: 400px;
-                            margin: 0 auto;
-                            border: 2px solid #10b981;
-                            padding: 20px;
-                            border-radius: 8px;
-                        }
-                        .header {
-                            text-align: center;
-                            border-bottom: 2px solid #10b981;
-                            padding-bottom: 15px;
-                            margin-bottom: 15px;
-                        }
-                        .header h1 {
-                            margin: 0;
-                            color: #10b981;
-                            font-size: 24px;
-                        }
-                        .header p {
-                            margin: 5px 0;
-                            font-size: 12px;
-                            color: #666;
-                        }
-                        .invoice-type {
-                            text-align: center;
-                            background: ${isAdmin ? '#fef3c7' : '#dcfce7'};
-                            padding: 8px;
-                            border-radius: 4px;
-                            margin-bottom: 15px;
-                            font-weight: bold;
-                            color: ${isAdmin ? '#92400e' : '#15803d'};
-                        }
-                        .order-info {
-                            background: #f3f4f6;
-                            padding: 10px;
-                            border-radius: 4px;
-                            margin-bottom: 15px;
-                            font-size: 13px;
-                        }
-                        .order-info p {
-                            margin: 5px 0;
-                        }
-                        .order-info strong {
-                            color: #10b981;
-                        }
-                        .items-table {
-                            width: 100%;
-                            border-collapse: collapse;
-                            margin-bottom: 15px;
-                            font-size: 12px;
-                        }
-                        .items-table th {
-                            background: #10b981;
-                            color: white;
-                            padding: 8px;
-                            text-align: right;
-                            border: 1px solid #059669;
-                        }
-                        .items-table td {
-                            padding: 8px;
-                            border: 1px solid #e5e7eb;
-                            text-align: right;
-                        }
-                        .items-table tr:nth-child(even) {
-                            background: #f9fafb;
-                        }
-                        .totals {
-                            background: #f3f4f6;
-                            padding: 10px;
-                            border-radius: 4px;
-                            margin-bottom: 15px;
-                        }
-                        .total-row {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 5px 0;
-                            font-size: 13px;
-                            border-bottom: 1px solid #e5e7eb;
-                        }
-                        .total-row:last-child {
-                            border-bottom: none;
-                        }
-                        .grand-total {
-                            display: flex;
-                            justify-content: space-between;
-                            padding: 10px 0;
-                            font-size: 16px;
-                            font-weight: bold;
-                            color: #10b981;
-                        }
-                        .footer {
-                            text-align: center;
-                            border-top: 2px solid #10b981;
-                            padding-top: 15px;
-                            margin-top: 15px;
-                            font-size: 11px;
-                            color: #666;
-                        }
-                        .footer p {
-                            margin: 5px 0;
-                        }
-                        .print-button {
-                            width: 100%;
-                            padding: 12px;
-                            background: #10b981;
-                            color: white;
-                            border: none;
-                            border-radius: 4px;
-                            cursor: pointer;
-                            font-size: 14px;
-                            font-weight: bold;
-                            margin-top: 15px;
-                        }
-                        @media print {
-                            .print-button {
-                                display: none;
-                            }
-                            body {
-                                margin: 0;
-                                padding: 0;
-                            }
-                        }
+                        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: white; color: #333; }
+                        .invoice-container { max-width: 400px; margin: 0 auto; border: 2px solid #10b981; padding: 20px; border-radius: 8px; }
+                        .header { text-align: center; border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 15px; }
+                        .header h1 { margin: 0; color: #10b981; font-size: 24px; }
+                        .header p { margin: 5px 0; font-size: 12px; color: #666; }
+                        .invoice-type { text-align: center; background: ${isAdmin ? '#fef3c7' : '#dcfce7'}; padding: 8px; border-radius: 4px; margin-bottom: 15px; font-weight: bold; color: ${isAdmin ? '#92400e' : '#15803d'}; }
+                        .order-info { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; }
+                        .order-info p { margin: 5px 0; }
+                        .order-info strong { color: #10b981; }
+                        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 12px; }
+                        .items-table th { background: #10b981; color: white; padding: 8px; text-align: right; border: 1px solid #059669; }
+                        .items-table td { padding: 8px; border: 1px solid #e5e7eb; text-align: right; }
+                        .items-table tr:nth-child(even) { background: #f9fafb; }
+                        .totals { background: #f3f4f6; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+                        .total-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid #e5e7eb; }
+                        .total-row:last-child { border-bottom: none; }
+                        .grand-total { display: flex; justify-content: space-between; padding: 10px 0; font-size: 16px; font-weight: bold; color: #10b981; }
+                        .footer { text-align: center; border-top: 2px solid #10b981; padding-top: 15px; margin-top: 15px; font-size: 11px; color: #666; }
+                        .footer p { margin: 5px 0; }
+                        .print-button { width: 100%; padding: 12px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin-top: 15px; }
+                        @media print { .print-button { display: none; } body { margin: 0; padding: 0; } }
                     </style>
                 </head>
                 <body>
-                    <div class="invoice-container">                    <div class="header">
-                        <h1>مصروفي</h1>
-                        <p>متجر البقالة الإلكترونية</p>
-                    </div>
-
-                        <div class="invoice-type">
-                            ${isAdmin ? 'فاتورة مجهز الطلبية' : 'فاتورة العميل'}
+                    <div class="invoice-container">
+                        <div class="header">
+                            <h1>مصروفي</h1>
+                            <p>متجر البقالة الإلكترونية</p>
                         </div>
-
+                        <div class="invoice-type">${isAdmin ? 'فاتورة مجهز الطلبية' : 'فاتورة العميل'}</div>
                         <div class="order-info">
                             <p><strong>رقم الطلب:</strong> ${orderId}</p>
                             <p><strong>التاريخ والوقت:</strong> ${data.date}</p>
@@ -2116,7 +2017,6 @@
                             <p><strong>الحي:</strong> ${data.neighborhood}</p>
                             <p><strong>العنوان:</strong> ${data.address}</p>
                         </div>
-
                         <table class="items-table">
                             <thead>
                                 <tr>
@@ -2137,7 +2037,6 @@
                                 `).join('')}
                             </tbody>
                         </table>
-
                         <div class="totals">
                             <div class="total-row">
                                 <span>المجموع:</span>
@@ -2152,16 +2051,12 @@
                                 <span>${data.finalTotal} دج</span>
                             </div>
                         </div>
-
                         <div class="footer">
                             <p><strong>طريقة الدفع:</strong> الدفع عند الاستلام (COD)</p>
                             <p>ساعات العمل: من 9 صباحاً إلى 9 مساءً</p>
                             <p>للتواصل: 0669986649</p>
-                            <p style="margin-top: 10px; border-top: 1px solid #e5e7eb; padding-top: 10px;">
-                                شكراً لتعاملك معنا
-                            </p>
+                            <p style="margin-top: 10px; border-top: 1px solid #e5e7eb; padding-top: 10px;">شكراً لتعاملك معنا</p>
                         </div>
-
                         <button class="print-button" onclick="window.print()">طباعة الفاتورة</button>
                     </div>
                 </body>
@@ -2199,7 +2094,6 @@
             });
         }
 
-        // تتبع الطلب
         function searchOrder() {
             const orderId = document.getElementById('trackingOrderId').value;
             const order = orders.find(o => o.id === orderId);
@@ -2247,30 +2141,50 @@
             `;
         }
 
-        // حساب العميل
+        // حساب العميل - عرض طلباته فقط
         function renderMyOrders() {
             const myOrdersList = document.getElementById('myOrdersList');
+            const savedPhone = localStorage.getItem("customerPhone") || currentUserPhone;
 
-            if (orders.length === 0) {
-                myOrdersList.innerHTML = '<p style="color: var(--text-light);">لا توجد طلبات سابقة</p>';
+            if (!savedPhone) {
+                myOrdersList.innerHTML = `
+                    <p style="color: var(--text-light); margin-bottom: 1rem;">
+                        لا يمكن عرض الطلبات لأن رقم هاتفك غير معروف بعد.
+                    </p>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">
+                        قم بإكمال طلب مرة واحدة، وسيتم ربط جميع طلباتك القادمة بنفس الرقم.
+                    </p>
+                `;
                 return;
             }
 
-            myOrdersList.innerHTML = orders.map(order => `
+            const myOrders = orders.filter(o => o.customerPhone == savedPhone);
+
+            if (myOrders.length === 0) {
+                myOrdersList.innerHTML = '<p style="color: var(--text-light);">لا توجد طلبات سابقة مرتبطة برقمك.</p>';
+                return;
+            }
+
+            myOrdersList.innerHTML = myOrders.map(order => `
                 <div class="order-item">
                     <div>
                         <strong>${order.id}</strong>
                         <p style="color: var(--text-light); font-size: 0.9rem;">${order.date}</p>
+                        <p style="color: var(--text-light); font-size: 0.9rem;">${order.finalTotal} دج</p>
                     </div>
                     <div style="text-align: right;">
-                        <p>${order.finalTotal} دج</p>
-                        <span class="status-badge ${order.status === 'معلق' ? 'pending' : order.status === 'مؤكد' ? 'confirmed' : order.status === 'قيد التوصيل' ? 'shipped' : order.status === 'مسلم' ? 'delivered' : 'cancelled'}">[${order.status}]</span>
+                        <span class="status-badge ${order.status === 'معلق' ? 'pending' : order.status === 'مؤكد' ? 'confirmed' : order.status === 'قيد التوصيل' ? 'shipped' : order.status === 'مسلم' ? 'delivered' : 'cancelled'}">
+                            ${order.status}
+                        </span>
+                        <button class="btn btn-secondary" style="margin-top: 0.5rem; padding: 0.3rem 0.6rem; font-size: 0.8rem;"
+                            onclick="printOrderInvoice('${order.id}')">
+                            طباعة الفاتورة
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // الإدارة
         function showAdminLogin() {
             document.getElementById('adminLoginModal').classList.add('active');
         }
@@ -2327,6 +2241,7 @@
             }
         }
 
+        // إضافة منتج وتخزينه في Google Sheets
         async function addProduct(event) {
             event.preventDefault();
 
@@ -2338,47 +2253,35 @@
             const image = uploadedImageData || '';
             const description = document.getElementById('productDescription').value;
 
-            const newProduct = {
-                name,
-                price,
-                stock,
-                category,
-                icon,
-                image,
-                description
-            };
+            const productPayload = { name, price, stock, category, icon, image, description };
 
             try {
                 const res = await fetch(API_URL, {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
-                        action: 'addProduct',
-                        product: newProduct
+                        action: "addProduct",
+                        product: productPayload
                     })
                 });
 
                 const json = await res.json();
                 if (json.success) {
-                    // إضافة المنتج مع ID من Google Sheets
-                    const productWithId = {
-                        id: json.data.id,
-                        ...newProduct
-                    };
-                    products.push(productWithId);
+                    const created = { id: json.data.id, ...productPayload };
+                    products.push(created);
 
                     event.target.reset();
                     uploadedImageData = '';
                     document.getElementById('imagePreview').style.display = 'none';
                     renderAdminProducts();
                     renderProducts();
-                    alert('✅ تم إضافة المنتج بنجاح إلى قاعدة البيانات');
+                    alert("✅ تم إضافة المنتج وتخزينه في قاعدة البيانات");
                 } else {
-                    console.error('Error:', json.error);
-                    alert('❌ حدث خطأ أثناء إضافة المنتج');
+                    console.error(json.error);
+                    alert("❌ فشل في إضافة المنتج إلى قاعدة البيانات");
                 }
-            } catch (err) {
-                console.error('خطأ في الاتصال بـ Google Sheets:', err);
-                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            } catch (e) {
+                console.error(e);
+                alert("❌ خطأ في الاتصال بواجهة Google Sheets");
             }
         }
 
@@ -2402,7 +2305,7 @@
         }
 
         async function editProduct(productId) {
-            const product = products.find(p => p.id === productId);
+            const product = products.find(p => p.id == productId);
             if (!product) return;
 
             const newPrice = prompt('السعر الجديد:', product.price);
@@ -2415,25 +2318,24 @@
 
             try {
                 const res = await fetch(API_URL, {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
-                        action: 'updateProduct',
+                        action: "updateProduct",
                         product: product
                     })
                 });
-
                 const json = await res.json();
                 if (json.success) {
                     renderAdminProducts();
                     renderProducts();
-                    alert('✅ تم تحديث المنتج في قاعدة البيانات');
+                    alert("✅ تم تحديث المنتج في قاعدة البيانات");
                 } else {
-                    console.error('Error:', json.error);
-                    alert('❌ حدث خطأ أثناء تحديث المنتج');
+                    console.error(json.error);
+                    alert("❌ فشل في تحديث المنتج");
                 }
-            } catch (err) {
-                console.error('خطأ في تحديث المنتج:', err);
-                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            } catch (e) {
+                console.error(e);
+                alert("❌ خطأ في الاتصال بقاعدة البيانات");
             }
         }
 
@@ -2442,33 +2344,32 @@
 
             try {
                 const res = await fetch(API_URL, {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({
-                        action: 'deleteProduct',
+                        action: "deleteProduct",
                         productId: productId
                     })
                 });
-
                 const json = await res.json();
                 if (json.success && json.data.deleted) {
                     products = products.filter(p => p.id != productId);
                     renderAdminProducts();
                     renderProducts();
-                    alert('✅ تم حذف المنتج من قاعدة البيانات');
+                    alert("✅ تم حذف المنتج من قاعدة البيانات");
                 } else {
-                    alert('❌ تعذر حذف المنتج');
+                    alert("❌ تعذر حذف المنتج");
                 }
-            } catch (err) {
-                console.error('خطأ في حذف المنتج:', err);
-                alert('❌ تعذر الاتصال بقاعدة البيانات، حاول لاحقاً');
+            } catch (e) {
+                console.error(e);
+                alert("❌ خطأ في الاتصال بقاعدة البيانات");
             }
         }
 
         function renderAdminOrders() {
             const list = document.getElementById('adminOrdersList');
 
-            if (orders.length === 0) {
-                list.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-light);">لا توجد طلبات</td></tr>';
+            if (!orders || orders.length === 0) {
+                list.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-light);">لا توجد طلبات</td></tr>';
                 return;
             }
 
@@ -2476,6 +2377,7 @@
                 <tr>
                     <td>${order.id}</td>
                     <td>${order.customerName}</td>
+                    <td>${order.customerPhone}</td>
                     <td>${order.neighborhood}</td>
                     <td>${order.finalTotal} دج</td>
                     <td>
@@ -2488,56 +2390,73 @@
                         </select>
                     </td>
                     <td>
-                        <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="viewOrderDetails('${order.id}')">عرض</button>
+                        <div style="display:flex; gap:0.35rem;">
+                            <button class="btn btn-secondary"
+                                style="padding:0.4rem 0.6rem; font-size:0.8rem; flex:1;"
+                                onclick="printOrderInvoice('${order.id}')">طباعة</button>
+
+                            <button class="btn"
+                                style="padding:0.4rem 0.6rem; font-size:0.8rem; background:#ef4444; flex:1;"
+                                onclick="deleteOrder('${order.id}')">حذف</button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        // حذف الطلب من Google Sheets + من الواجهة 🗑️
+        async function deleteOrder(orderId) {
+            if (!confirm(`هل تريد حذف الطلب ${orderId}؟\nلا يمكن استرجاعه بعد الحذف!`)) return;
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        action: "deleteOrder",
+                        orderId: orderId
+                    })
+                });
+
+                const json = await res.json();
+
+                if (json.success) {
+                    orders = orders.filter(o => o.id !== orderId);
+                    renderAdminOrders();
+                    updateAdminStats();
+                    renderReports();
+                    alert("✅ تم حذف الطلب بنجاح");
+                } else {
+                    alert("❌ فشل حذف الطلب: " + (json.error || "خطأ غير معروف"));
+                }
+            } catch (e) {
+                console.error(e);
+                alert("❌ خطأ في الاتصال أثناء حذف الطلب");
+            }
         }
 
         async function updateOrderStatus(orderId, newStatus) {
             const order = orders.find(o => o.id === orderId);
             if (order) {
                 order.status = newStatus;
-                
-                // تحديث الحالة في Google Sheets
+
                 try {
                     const res = await fetch(API_URL, {
-                        method: 'POST',
+                        method: "POST",
                         body: JSON.stringify({
-                            action: 'updateOrderStatus',
+                            action: "updateOrderStatus",
                             orderId: orderId,
                             status: newStatus
                         })
                     });
-
                     const json = await res.json();
-                    if (!json.success) {
-                        console.error('Warning: Could not update order status in Google Sheets', json.error);
+                    if (json.success) {
+                        updateAdminStats();
+                        alert("✅ تم تحديث حالة الطلب");
                     }
-                } catch (err) {
-                    console.error('Warning: Could not update order status:', err);
+                } catch (e) {
+                    console.error(e);
                 }
-                
-                updateAdminStats();
             }
-        }
-
-        function viewOrderDetails(orderId) {
-            const order = orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            let details = `الطلب: ${order.id}\nالعميل: ${order.customerName}\nالهاتف: ${order.customerPhone}\nالحي: ${order.neighborhood}\nالعنوان: ${order.address}\n\nالمنتجات:\n`;
-
-            order.items.forEach(item => {
-                const product = products.find(p => p.id === item.id);
-                if (product) {
-                    details += `- ${product.name} (${item.quantity}x) = ${product.price * item.quantity} دج\n`;
-                }
-            });
-
-            details += `\nالمجموع: ${order.total} دج\nالتوصيل: ${order.deliveryFee} دج\nالإجمالي النهائي: ${order.finalTotal} دج`;
-
-            alert(details);
         }
 
         function renderReports() {
@@ -2573,14 +2492,12 @@
             document.getElementById(tabName + 'Tab').classList.add('active');
         }
 
-        // معالجة رسالة التواصل
         function sendContactMessage(event) {
             event.preventDefault();
             alert('شكراً لتواصلك معنا، سيتم الرد عليك قريباً');
             event.target.reset();
         }
 
-        // إدارة اللوغو
         function showLogoSettings() {
             document.getElementById('logoSettingsModal').classList.add('active');
             const logoImage = document.getElementById('logoImage');
@@ -2615,7 +2532,6 @@
             }
         }
 
-        // تحميل اللوغو المحفوظ
         function loadLogo() {
             const savedLogo = localStorage.getItem('storedLogo');
             if (savedLogo) {
@@ -2623,8 +2539,8 @@
             }
         }
 
-        // تحميل البيانات عند فتح الصفحة
         window.addEventListener('DOMContentLoaded', function() {
+            currentUserPhone = localStorage.getItem("customerPhone") || "";
             loadData();
             loadLogo();
         });
